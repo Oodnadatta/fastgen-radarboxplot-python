@@ -20,6 +20,9 @@ def radarboxplot(x, y, colNames, plotMedian=False, **kwargs):
     minVal = np.min(x, 0)
     maxVal = np.max(x, 0)
     standardized = 0.1+0.9*(x-minVal)/(maxVal-minVal)
+
+    exps = np.array([2, 8, 2, 21, 4, 5, 2, 1]) # TODO load from file
+    exps = 0.1+0.9*(exps-minVal)/(maxVal-minVal)
     
     # Calculate angles for each variable and 
     # repeat to close polygons
@@ -40,10 +43,8 @@ def radarboxplot(x, y, colNames, plotMedian=False, **kwargs):
         q50 = quantiles[1]
         q75 = quantiles[2]
         qDiff = q75-q25
-        outTop = values > (q75+qDiff*1.5)
-        outBot = values < (q25-qDiff*1.5)
-        tops = np.ma.array(values, mask=outTop)
-        bots = np.ma.array(values, mask=outBot)
+        tops = np.ma.array(values)
+        bots = np.ma.array(values)
         q100 = np.max(tops, 0)
         q0 = np.min(bots, 0)
         q100 = np.append(q100, q100[0])
@@ -51,18 +52,14 @@ def radarboxplot(x, y, colNames, plotMedian=False, **kwargs):
         q25 = np.append(q25, q25[0])
         q50 = np.append(q50, q50[0])
         q75 = np.append(q75, q75[0])
-        bots = values[outBot]
-        botsAlpha = (np.array(angles[:-1])*outBot)[outBot]
-        tops = values[outTop]
-        topsAlpha = (np.array(angles[:-1])*outTop)[outTop]
-        axs.append(__generate_plot__(angles, q25, q50, q75, q0, q100, topsAlpha,
-                                tops, botsAlpha, bots, i+1, class_i, colNames,
+        expsAlpha = np.array(angles[:-1])
+        
+        axs.append(__generate_plot__(angles, q25, q50, q75, q0, q100, expsAlpha, exps, i+1, class_i, colNames,
                                 plotMedian, fig, nrows, ncols, kwargs))
     return (fig, axs)
 
 
-def __generate_plot__(angles, q25, q50, q75, q0, q100, topsAlpha, tops,
-                 botsAlpha, bots, row, title, categories, plotMedian, fig,
+def __generate_plot__(angles, q25, q50, q75, q0, q100, expsAlpha, exps, row, title, categories, plotMedian, fig,
                  nrows, ncols, kwargs):
     # Check if there is color kwargs:
     color = kwargs.get("color")
@@ -102,8 +99,7 @@ def __generate_plot__(angles, q25, q50, q75, q0, q100, topsAlpha, tops,
         plt.polar(angles, q50, lw=.5, color=col3)
     plt.polar(angles, q25, lw=1, color=col1)
     plt.polar(angles, q75, lw=1, color=col1)
-    plt.polar(topsAlpha, tops, markeredgecolor="black", marker="o", 
-              markerfacecolor="none", linewidth=0, markersize=3)
-    plt.polar(botsAlpha, bots, markeredgecolor="black", marker="o", 
+
+    plt.polar(expsAlpha, exps, markeredgecolor="black", marker="o",
               markerfacecolor="none", linewidth=0, markersize=3)
     return ax

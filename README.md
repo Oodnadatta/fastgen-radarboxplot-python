@@ -1,15 +1,16 @@
-# Radar-Boxplot
+# Fastgen-Radar-Boxplot
 
-This package provides the implementation of the radar-boxplot, a chart created and developed by the author.
+This package provides the implementation of the radar-boxplot for the Fastgen study, a chart forked from the tool created and developed by [Caio Hamamura](https://github.com/caiohamamura).
 
-## Installation
+## Dependencies installation
 
-The package is available for Python 3 only and can be installed via pip.
+    poetry install
 
-`python -m pip install radarboxplot`
+## Running
 
+    poetry run ./fastgen.py
 
-## Usage
+## Usage (from Caio Hamamura)
 
 Basically the arguments are a two-dimensional array of `x` numerical attributes (either continuous and ordinal will make sense), array of `y` classes (better the class name, because it will be the title of the subplots) and the `colNames` which are the column names to label the attributes accordingly. They must be in the same order os the columns of the `x` array.
 
@@ -46,26 +47,7 @@ Intuitively you can see that *Iris setosa* has a significant different distribut
 
 The radar-boxplot is best suited when you have more than 4 relevant variables for your clustering/classification task, because it makes able to represent such dimensionality while still being readable.
 
-## Example
+## Note
 
-Using the iris dataset from sklearn:
-
-```python
-from sklearn.datasets import load_iris
-from radarboxplot import radarboxplot
-import matplotlib.pyplot as plt
-
-iris = load_iris()
-
-x = iris['data']
-y = iris["target_names"][iris['target']]
-colNames = iris["feature_names"]
-
-# Basic default plot
-radarboxplot(x, y, colNames)
-plt.show()
-
-# Use orange and green colors, plot median line, all in the same row
-radarboxplot(x, y, colNames, plotMedian=True, color=["orange", "green"], nrows=1, ncols=3)
-plt.show()
-```
+Outliers display on the plot has been removed.
+The `radarboxplot.py` script displays a plot with a reference value.
